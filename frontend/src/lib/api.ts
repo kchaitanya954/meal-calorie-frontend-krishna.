@@ -1,4 +1,14 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+function normalizeBaseUrl(raw?: string): string {
+  let url = raw && raw.trim() ? raw.trim() : 'http://localhost:8000';
+  if (!/^https?:\/\//i.test(url)) {
+    url = `https://${url}`; // ensure absolute URL in production
+  }
+  // drop trailing slash to avoid //path
+  if (url.endsWith('/')) url = url.slice(0, -1);
+  return url;
+}
+
+const BASE_URL = normalizeBaseUrl(process.env.NEXT_PUBLIC_API_BASE_URL);
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
