@@ -4,7 +4,6 @@ from pydantic import BaseModel, Field, field_validator
 
 
 class GetCaloriesRequest(BaseModel):
-    # Allow empty here so service can map empty to 404 (not 422)
     dish_name: str = Field(min_length=0, max_length=100)
     servings: int = Field(gt=0, le=100)
 
