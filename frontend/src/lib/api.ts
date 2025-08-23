@@ -126,3 +126,24 @@ export async function deleteMeal(mealId: number, token: string) {
   });
 }
 
+export interface MealLogOut {
+  id: number;
+  dish_name: string;
+  matched_name?: string;
+  servings: number;
+  total_calories: number;
+  calories_per_serving?: number;
+  protein_g?: number | null;
+  fat_g?: number | null;
+  carbs_g?: number | null;
+  ingredients_text?: string | null;
+}
+
+export async function getMeals(token: string): Promise<MealLogOut[]> {
+  return request<MealLogOut[]>('/meals', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+

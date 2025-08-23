@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/stores/authStore';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
-import { createMeal, deleteMeal } from '@/lib/api';
+import { createMeal, deleteMeal, getMeals, type MealLogOut } from '@/lib/api';
 
 function getErrorMessage(err: unknown): string {
   if (err instanceof Error) return err.message;
@@ -13,18 +13,7 @@ function getErrorMessage(err: unknown): string {
   }
 }
 
-type Meal = {
-  id: number;
-  dish_name: string;
-  matched_name?: string;
-  servings: number;
-  total_calories: number;
-  calories_per_serving?: number;
-  protein_g?: number | null;
-  fat_g?: number | null;
-  carbs_g?: number | null;
-  ingredients_text?: string | null;
-};
+type Meal = MealLogOut;
 
 export default function MealsPage() {
   const authed = useAuthGuard();
@@ -36,12 +25,8 @@ export default function MealsPage() {
   async function reload() {
     if (!token) return;
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000'}/meals`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!res.ok) throw new Error('Failed to load meals');
-      const data: Meal[] = await res.json();
-      setMeals(data);
+      const data = await getMeals(token);
+      setMeals(data as Meal[]);
     } catch (err: unknown) {
       setError(getErrorMessage(err));
     }
