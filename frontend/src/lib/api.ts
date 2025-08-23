@@ -10,8 +10,12 @@ function normalizeBaseUrl(raw?: string): string {
 
 const BASE_URL = normalizeBaseUrl(process.env.NEXT_PUBLIC_API_BASE_URL);
 
-function isDetailObject(x: unknown): x is { msg?: string } {
-  return typeof x === 'object' && x !== null && 'msg' in (x as any);
+function isDetailObject(x: unknown): x is { msg?: unknown } {
+  return (
+    typeof x === 'object' &&
+    x !== null &&
+    Object.prototype.hasOwnProperty.call(x, 'msg')
+  );
 }
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {

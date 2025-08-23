@@ -3,7 +3,7 @@
 A full-stack app to register/login, look up calories/macros from USDA FoodData Central, and log meals.
 
 ## Hosted link
-- Vercel: https://meal-calorie-frontend-krishna-m7kattqxd.vercel.app/meals
+- Vercel: https://meal-calorie-frontend-krishna.vercel.app/
 
 ## Tech
 - Backend: FastAPI, SQLAlchemy, Postgres, JWT (python-jose), bcrypt (passlib), httpx, slowapi
