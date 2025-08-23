@@ -10,7 +10,9 @@ function normalizeBaseUrl(raw?: string): string {
 
 const BASE_URL = normalizeBaseUrl(process.env.NEXT_PUBLIC_API_BASE_URL);
 
-type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
+function isDetailObject(x: unknown): x is { msg?: string } {
+  return typeof x === 'object' && x !== null && 'msg' in (x as any);
+}
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const res = await fetch(`${BASE_URL}${path}`, {
@@ -27,7 +29,9 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
       const data = await res.json();
       if (data?.detail) {
         if (Array.isArray(data.detail)) {
-          const msgs = data.detail.map((d: any) => d?.msg || JSON.stringify(d)).join('; ');
+          const msgs = (data.detail as unknown[])
+            .map((d) => (isDetailObject(d) ? d.msg ?? JSON.stringify(d) : JSON.stringify(d)))
+            .join('; ');
           message = msgs || message;
         } else if (typeof data.detail === 'string') {
           message = data.detail;
@@ -35,7 +39,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
           message = JSON.stringify(data.detail);
         }
       }
-    } catch (_) {}
+    } catch {}
     throw new Error(message);
   }
   if (res.status === 204) {
