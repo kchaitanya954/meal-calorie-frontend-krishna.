@@ -4,6 +4,15 @@ import { useAuthStore } from '@/stores/authStore';
 import { createMeal } from '@/lib/api';
 import { useState } from 'react';
 
+function getErrorMessage(err: unknown): string {
+  if (err instanceof Error) return err.message;
+  try {
+    return String(err);
+  } catch {
+    return 'Unexpected error';
+  }
+}
+
 export default function ResultCard() {
   const result = useMealStore((s) => s.lastResult);
   const token = useAuthStore((s) => s.token);
@@ -47,8 +56,8 @@ export default function ResultCard() {
             try {
               await createMeal({ dish_name: result.dish_name, servings: result.servings }, token);
               setMsg('Meal saved!');
-            } catch (e: any) {
-              setMsg(e.message || 'Failed to save');
+            } catch (err: unknown) {
+              setMsg(getErrorMessage(err));
             } finally {
               setSaving(false);
             }

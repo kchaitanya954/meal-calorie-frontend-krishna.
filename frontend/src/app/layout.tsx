@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import ClientHeader from "./client-header";
 import Providers from "./providers";
 import { Geist, Geist_Mono } from "next/font/google";

@@ -4,6 +4,15 @@ import { useAuthStore } from '@/stores/authStore';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
 import { createMeal, deleteMeal } from '@/lib/api';
 
+function getErrorMessage(err: unknown): string {
+  if (err instanceof Error) return err.message;
+  try {
+    return String(err);
+  } catch {
+    return 'Unexpected error';
+  }
+}
+
 type Meal = {
   id: number;
   dish_name: string;
@@ -31,10 +40,10 @@ export default function MealsPage() {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error('Failed to load meals');
-      const data = await res.json();
+      const data: Meal[] = await res.json();
       setMeals(data);
-    } catch (e: any) {
-      setError(e.message || 'Error');
+    } catch (err: unknown) {
+      setError(getErrorMessage(err));
     }
   }
 
@@ -64,8 +73,8 @@ export default function MealsPage() {
             await createMeal({ dish_name, servings }, token!);
             formEl.reset();
             await reload();
-          } catch (err: any) {
-            setError(err.message || 'Failed to create meal');
+          } catch (err: unknown) {
+            setError(getErrorMessage(err));
           } finally {
             setLoading(false);
           }
@@ -102,8 +111,8 @@ export default function MealsPage() {
                   try {
                     await deleteMeal(m.id, token!);
                     await reload();
-                  } catch (e) {
-                    // ignore for now
+                  } catch {
+                    // ignore
                   }
                 }}
               >

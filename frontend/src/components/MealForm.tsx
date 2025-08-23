@@ -4,6 +4,15 @@ import { getCalories } from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
 import { useMealStore } from '@/stores/mealStore';
 
+function getErrorMessage(err: unknown): string {
+  if (err instanceof Error) return err.message;
+  try {
+    return String(err);
+  } catch {
+    return 'Unexpected error';
+  }
+}
+
 export default function MealForm() {
   const token = useAuthStore((s) => s.token);
   const setResult = useMealStore((s) => s.setResult);
@@ -25,8 +34,8 @@ export default function MealForm() {
         servings: Number(fd.get('servings') || 1),
       }, token);
       setResult(res);
-    } catch (err: any) {
-      setError(err.message || 'Failed to fetch calories');
+    } catch (err: unknown) {
+      setError(getErrorMessage(err));
     } finally {
       setLoading(false);
     }

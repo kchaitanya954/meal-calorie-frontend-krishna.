@@ -4,6 +4,15 @@ import { registerUser, loginUser } from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
 import { useRouter } from 'next/navigation';
 
+function getErrorMessage(err: unknown): string {
+  if (err instanceof Error) return err.message;
+  try {
+    return String(err);
+  } catch {
+    return 'Unexpected error';
+  }
+}
+
 type Mode = 'login' | 'register';
 
 export default function AuthForm({ mode }: { mode: Mode }) {
@@ -32,8 +41,8 @@ export default function AuthForm({ mode }: { mode: Mode }) {
         setToken(token.access_token);
       }
       router.push('/dashboard');
-    } catch (err: any) {
-      setError(err.message || 'Something went wrong');
+    } catch (err: unknown) {
+      setError(getErrorMessage(err));
     } finally {
       setLoading(false);
     }
