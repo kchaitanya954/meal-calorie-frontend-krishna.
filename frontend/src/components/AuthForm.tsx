@@ -1,0 +1,59 @@
+"use client";
+import { useState } from 'react';
+import { registerUser, loginUser } from '@/lib/api';
+import { useAuthStore } from '@/stores/authStore';
+import { useRouter } from 'next/navigation';
+
+type Mode = 'login' | 'register';
+
+export default function AuthForm({ mode }: { mode: Mode }) {
+  const router = useRouter();
+  const setToken = useAuthStore((s) => s.setToken);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+    const fd = new FormData(e.currentTarget);
+    try {
+      if (mode === 'register') {
+        await registerUser({
+          first_name: String(fd.get('first_name') || ''),
+          last_name: String(fd.get('last_name') || ''),
+          email: String(fd.get('email') || ''),
+          password: String(fd.get('password') || ''),
+        });
+        const token = await loginUser(String(fd.get('email') || ''), String(fd.get('password') || ''));
+        setToken(token.access_token);
+      } else {
+        const token = await loginUser(String(fd.get('email') || ''), String(fd.get('password') || ''));
+        setToken(token.access_token);
+      }
+      router.push('/dashboard');
+    } catch (err: any) {
+      setError(err.message || 'Something went wrong');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <form onSubmit={onSubmit} className="space-y-3 max-w-sm w-full">
+      {mode === 'register' && (
+        <div className="grid grid-cols-2 gap-2">
+          <input className="border p-2 rounded" name="first_name" placeholder="First name" required />
+          <input className="border p-2 rounded" name="last_name" placeholder="Last name" required />
+        </div>
+      )}
+      <input className="border p-2 rounded w-full" type="email" name="email" placeholder="Email" required />
+      <input className="border p-2 rounded w-full" type="password" name="password" placeholder="Password" required />
+      {error && <p className="text-red-600 text-sm">{error}</p>}
+      <button disabled={loading} className="bg-black text-white px-4 py-2 rounded w-full">
+        {loading ? 'Please wait...' : mode === 'register' ? 'Create account' : 'Login'}
+      </button>
+    </form>
+  );
+}
+

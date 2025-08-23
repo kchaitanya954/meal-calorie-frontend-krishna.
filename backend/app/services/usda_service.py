@@ -33,7 +33,6 @@ async def calculate_calories(dish_name: str, servings: int) -> GetCaloriesRespon
                 fat_g=(cached.get("macros_per_serving") or {}).get("fat_g"),
                 carbs_g=(cached.get("macros_per_serving") or {}).get("carbs_g"),
             ),
-            suggestions=cached.get("suggestions"),
         )
 
     params = {
@@ -51,7 +50,7 @@ async def calculate_calories(dish_name: str, servings: int) -> GetCaloriesRespon
     if not foods:
         raise AppError("Dish not found", 404)
 
-    # Fuzzy match: choose best by WRatio among returned foods, keep top suggestions
+    # Fuzzy match: choose best by WRatio among returned foods
     scored = []
     for f in foods:
         name = f.get("description") or ""
@@ -59,7 +58,6 @@ async def calculate_calories(dish_name: str, servings: int) -> GetCaloriesRespon
         scored.append((score, f))
     scored.sort(key=lambda x: x[0], reverse=True)
     best = scored[0][1]
-    suggestions = [s[1].get("description") for s in scored[:5] if s[1].get("description")]
 
     # Extract Energy from foodNutrients (nutrientId=1008 or nutrientName='Energy')
     energy_kcal: Optional[float] = None
@@ -106,7 +104,6 @@ async def calculate_calories(dish_name: str, servings: int) -> GetCaloriesRespon
         total_calories=calories_per_serving * servings,
         ingredients_text=best.get("ingredients"),
         macros_per_serving=MacroNutrients(protein_g=protein_g, fat_g=fat_g, carbs_g=carbs_g),
-        suggestions=suggestions,
     )
 
     cache.set(
@@ -121,7 +118,6 @@ async def calculate_calories(dish_name: str, servings: int) -> GetCaloriesRespon
                 "fat_g": fat_g,
                 "carbs_g": carbs_g,
             },
-            "suggestions": suggestions,
         },
     )
     return result

@@ -1,6 +1,7 @@
 from typing import List
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request, HTTPException, status
+from app.core.rate_limiter import limiter
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user
@@ -14,7 +15,8 @@ router = APIRouter()
 
 
 @router.post("/meals", response_model=MealLogOut)
-async def create_meal(payload: MealLogCreate, db: Session = Depends(get_db), user=Depends(get_current_user)):
+@limiter.limit("15/minute")
+async def create_meal(request: Request, payload: MealLogCreate, db: Session = Depends(get_db), user=Depends(get_current_user)):
     # Compute nutrition via USDA service
     result = await calculate_calories(payload.dish_name, payload.servings)
 
@@ -41,4 +43,14 @@ async def create_meal(payload: MealLogCreate, db: Session = Depends(get_db), use
 def list_meals(db: Session = Depends(get_db), user=Depends(get_current_user)):
     meals = db.query(MealLog).filter(MealLog.user_id == user.id).order_by(MealLog.created_at.desc()).all()
     return meals
+
+
+@router.delete("/meals/{meal_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_meal(request: Request, meal_id: int, db: Session = Depends(get_db), user=Depends(get_current_user)):
+    meal = db.query(MealLog).filter(MealLog.id == meal_id, MealLog.user_id == user.id).first()
+    if not meal:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Meal not found")
+    db.delete(meal)
+    db.commit()
+    return None
 
