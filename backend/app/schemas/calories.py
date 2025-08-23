@@ -1,11 +1,28 @@
 from typing import List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class GetCaloriesRequest(BaseModel):
-    dish_name: str = Field(min_length=2)
-    servings: int = Field(gt=0)
+    # Allow empty here so service can map empty to 404 (not 422)
+    dish_name: str = Field(min_length=0, max_length=100)
+    servings: int = Field(gt=0, le=100)
+
+    @field_validator("dish_name", mode="before")
+    @classmethod
+    def validate_dish_name(cls, v: str) -> str:
+        name = v.strip()
+        if not name:
+            return name
+        if len(name) == 1:
+            raise ValueError("Dish name too short")
+        # Allow letters and spaces only
+        import re
+        if re.search(r"[0-9]", name):
+            raise ValueError("Dish name must not contain numbers")
+        if not re.fullmatch(r"[A-Za-z ]+", name):
+            raise ValueError("Dish name contains invalid special characters")
+        return name
 
 
 class MacroNutrients(BaseModel):

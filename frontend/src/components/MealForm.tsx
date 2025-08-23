@@ -43,7 +43,7 @@ export default function MealForm() {
 
   return (
     <form onSubmit={onSubmit} className="space-y-3 max-w-md w-full">
-      <input className="border p-2 rounded w-full" name="dish_name" placeholder="Dish name (e.g., Cheddar Cheese)" required />
+      <input className="border p-2 rounded w-full" name="dish_name" placeholder="Dish name (letters and spaces only)" pattern="[A-Za-z ]+" title="Use letters and spaces only" required />
       <input className="border p-2 rounded w-full" name="servings" type="number" min={1} defaultValue={1} />
       {error && <p className="text-red-600 text-sm">{error}</p>}
       <button disabled={loading} className="bg-black text-white px-4 py-2 rounded">

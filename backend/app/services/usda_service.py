@@ -15,6 +15,13 @@ cache = InMemoryTTLCache(default_ttl_seconds=settings.USDA_CACHE_TTL_SECONDS)
 async def calculate_calories(dish_name: str, servings: int) -> GetCaloriesResponse:
     if servings <= 0:
         raise AppError("Invalid servings", 400)
+    # data validation
+    import re
+    trimmed = (dish_name or "").strip()
+    if not trimmed:
+        raise AppError("Dish not found", 404)
+    if len(trimmed) == 1 or re.search(r"[0-9]", trimmed) or not re.fullmatch(r"[A-Za-z ]+", trimmed):
+        raise AppError("Invalid dish name", 400)
 
     cache_key = f"usda:{dish_name.lower()}"
     cached = cache.get(cache_key)

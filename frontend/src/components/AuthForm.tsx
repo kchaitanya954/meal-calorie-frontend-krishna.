@@ -52,12 +52,24 @@ export default function AuthForm({ mode }: { mode: Mode }) {
     <form onSubmit={onSubmit} className="space-y-3 max-w-sm w-full">
       {mode === 'register' && (
         <div className="grid grid-cols-2 gap-2">
-          <input className="border p-2 rounded" name="first_name" placeholder="First name" required />
-          <input className="border p-2 rounded" name="last_name" placeholder="Last name" required />
+          <label className="flex flex-col text-sm gap-1">
+            <span>First name</span>
+            <input className="border p-2 rounded" name="first_name" required />
+          </label>
+          <label className="flex flex-col text-sm gap-1">
+            <span>Last name</span>
+            <input className="border p-2 rounded" name="last_name" required />
+          </label>
         </div>
       )}
-      <input className="border p-2 rounded w-full" type="email" name="email" placeholder="Email" required />
-      <input className="border p-2 rounded w-full" type="password" name="password" placeholder="Password" required />
+      <label className="flex flex-col text-sm gap-1">
+        <span>Email</span>
+        <input className="border p-2 rounded w-full" type="email" name="email" required />
+      </label>
+      <label className="flex flex-col text-sm gap-1">
+        <span>Password</span>
+        <input className="border p-2 rounded w-full" type="password" name="password" required />
+      </label>
       {error && <p className="text-red-600 text-sm">{error}</p>}
       <button disabled={loading} className="bg-black text-white px-4 py-2 rounded w-full">
         {loading ? 'Please wait...' : mode === 'register' ? 'Create account' : 'Login'}

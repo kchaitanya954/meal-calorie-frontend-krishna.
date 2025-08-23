@@ -2,6 +2,7 @@ from typing import List
 
 from fastapi import APIRouter, Depends, Request, HTTPException, status
 from app.core.rate_limiter import limiter
+from app.core.config import settings
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user
@@ -15,7 +16,7 @@ router = APIRouter()
 
 
 @router.post("/meals", response_model=MealLogOut)
-@limiter.limit("15/minute")
+@limiter.limit(settings.RATE_LIMIT)
 async def create_meal(request: Request, payload: MealLogCreate, db: Session = Depends(get_db), user=Depends(get_current_user)):
     # Compute nutrition via USDA service
     result = await calculate_calories(payload.dish_name, payload.servings)
