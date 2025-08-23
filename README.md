@@ -136,10 +136,28 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
 - Theme default set to light; user can toggle in header.
 
 ## Screenshots
-- See `test_images/`
-  - `test_images/Screenshot 2025-08-24 at 1.44.17 AM.png` — [description placeholder]
-  - `test_images/Screenshot 2025-08-24 at 1.44.32 AM.png` — [description placeholder]
-  - `test_images/Screenshot 2025-08-24 at 1.44.38 AM.png` — [description placeholder]
-  - `test_images/Screenshot 2025-08-24 at 1.44.53 AM.png` — [description placeholder]
-  - `test_images/Screenshot 2025-08-24 at 1.45.06 AM.png` — [description placeholder]
-  - `test_images/Screenshot 2025-08-24 at 1.45.39 AM.png` — [description placeholder]
+
+<p align="center">
+  <img src="test_images/Screenshot 2025-08-24 at 1.44.17 AM.png" alt="Screenshot 1" width="600"/><br>
+  <em>[Registration page]</em>
+</p>
+<p align="center">
+  <img src="test_images/Screenshot 2025-08-24 at 1.44.32 AM.png" alt="Screenshot 2" width="600"/><br>
+  <em>[login page]</em>
+</p>
+<p align="center">
+  <img src="test_images/Screenshot 2025-08-24 at 1.44.38 AM.png" alt="Screenshot 3" width="600"/><br>
+  <em>[main dashboard]</em>
+</p>
+<p align="center">
+  <img src="test_images/Screenshot 2025-08-24 at 1.44.53 AM.png" alt="Screenshot 4" width="600"/><br>
+  <em>[calories counter]</em>
+</p>
+<p align="center">
+  <img src="test_images/Screenshot 2025-08-24 at 1.45.06 AM.png" alt="Screenshot 5" width="600"/><br>
+  <em>[meals logger]</em>
+</p>
+<p align="center">
+  <img src="test_images/Screenshot 2025-08-24 at 1.45.39 AM.png" alt="Screenshot 6" width="600"/><br>
+  <em>[changing color mode]</em>
+</p>
