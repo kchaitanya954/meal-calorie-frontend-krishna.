@@ -44,7 +44,7 @@ async def calculate_calories(dish_name: str, servings: int) -> GetCaloriesRespon
 
     params = {
         "query": dish_name,
-        "pageSize": 10,
+        "pageSize": 5,
         "api_key": settings.USDA_API_KEY,
     }
     async with httpx.AsyncClient(timeout=20) as client:
