@@ -6,7 +6,7 @@ A full-stack app to register/login, look up calories/macros from USDA FoodData C
 - Vercel: https://meal-calorie-frontend-krishna.vercel.app/
 
 ## Tech
-- Backend: FastAPI, SQLAlchemy, Postgres, JWT (python-jose), bcrypt (passlib), httpx, slowapi
+- Backend: Python, FastAPI, SQLAlchemy, Postgres, JWT (python-jose), httpx
 - Frontend: Next.js (App Router, TS), Tailwind, Zustand, next-themes
 
 ## Setup (Local with Docker)
